@@ -6,6 +6,7 @@ from streamlit_option_menu import option_menu
 from PIL import Image
 import locale
 
+st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
 # User credentials
 user = "admin"
