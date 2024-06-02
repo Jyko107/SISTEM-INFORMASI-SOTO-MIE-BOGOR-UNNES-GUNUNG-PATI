@@ -456,57 +456,72 @@ def neraca_saldo_page():
 def laporan_keuangan_page():
     st.title("Laporan Keuangan")
     
-    # Set locale to Indonesian
-    locale.setlocale(locale.LC_ALL, 'id_ID')
-
-    # Sidebar untuk input data
     st.header("Input Data")
     tgl_laporan = st.date_input("Tanggal Laporan:")
+    
     st.subheader("Laporan Laba Rugi")
-    pendapatan_usaha = st.number_input("Pendapatan Usaha (IDR):", value=0, step=1000)
-    biaya_bahan_baku = st.number_input("Biaya Bahan Baku (IDR):", value=0, step=1000)
-    biaya_tenaga_kerja = st.number_input("Biaya Tenaga Kerja (IDR):", value=0, step=1000)
-    biaya_overhead_pabrik = st.number_input("Biaya Overhead Pabrik (IDR):", value=0, step=1000)
-    biaya_operasional = st.number_input("Biaya Operasional (IDR):", value=0, step=1000)
+    pendapatan_usaha = st.text_input("Pendapatan Usaha:", "0")
+    biaya_bahan_baku = st.text_input("Biaya Bahan Baku:", "0")
+    biaya_tenaga_kerja = st.text_input("Biaya Tenaga Kerja:", "0")
+    biaya_overhead_pabrik = st.text_input("Biaya Overhead Pabrik:", "0")
+    biaya_operasional = st.text_input("Biaya Operasional:", "0")
     
     st.subheader("Laporan Perubahan Modal")
-    modal_awal = st.number_input("Modal Awal (IDR):", value=0, step=1000)
-    akun_privasi = st.number_input("Akun Privasi (IDR):", value=0, step=1000)
+    modal_awal = st.text_input("Modal Awal:", "0")
     
     st.subheader("Laporan Posisi Keuangan")
-    akun_aktiva = st.number_input("Akun Aktiva (IDR):", value=0, step=1000)
+    kas = st.text_input("Kas:", "0")
+    piutang_usaha = st.text_input("Piutang Usaha:", "0")
     
     st.subheader("Total Kewajiban dan Modal")
-    hutang_usaha = st.number_input("Hutang Usaha (IDR):", value=0, step=1000)
+    hutang_usaha = st.text_input("Hutang Usaha:", "0")
+    
+    # Mengonversi input teks ke angka
+    def parse_input(value):
+        try:
+            return int(value.replace('Rp', '').replace(',', '').strip())
+        except ValueError:
+            return 0
+
+    pendapatan_usaha = parse_input(pendapatan_usaha)
+    biaya_bahan_baku = parse_input(biaya_bahan_baku)
+    biaya_tenaga_kerja = parse_input(biaya_tenaga_kerja)
+    biaya_overhead_pabrik = parse_input(biaya_overhead_pabrik)
+    biaya_operasional = parse_input(biaya_operasional)
+    modal_awal = parse_input(modal_awal)
+    kas = parse_input(kas)
+    piutang_usaha = parse_input(piutang_usaha)
+    hutang_usaha = parse_input(hutang_usaha)
     
     laba_bersih = pendapatan_usaha - (biaya_bahan_baku + biaya_tenaga_kerja + biaya_overhead_pabrik + biaya_operasional)
-    total_modal = modal_awal + laba_bersih - akun_privasi
-    total_aset = akun_aktiva
+    total_modal = modal_awal + laba_bersih
+    total_aset = kas + piutang_usaha
     total_kewajiban_modal = total_modal + hutang_usaha
-
+    
     # Menampilkan laporan laba rugi
     st.header("Laporan Laba Rugi")
-    st.write("Pendapatan Usaha:", locale.currency(pendapatan_usaha, grouping=True))
-    st.write("Biaya Bahan Baku:", locale.currency(biaya_bahan_baku, grouping=True))
-    st.write("Biaya Tenaga Kerja:", locale.currency(biaya_tenaga_kerja, grouping=True))
-    st.write("Biaya Overhead Pabrik:", locale.currency(biaya_overhead_pabrik, grouping=True))
-    st.write("Biaya Operasional:", locale.currency(biaya_operasional, grouping=True))
-    st.write("Laba Bersih:", locale.currency(laba_bersih, grouping=True))
+    st.write("Pendapatan Usaha:", f"Rp {pendapatan_usaha:,.0f}")
+    st.write("Biaya Bahan Baku:", f"Rp {biaya_bahan_baku:,.0f}")
+    st.write("Biaya Tenaga Kerja:", f"Rp {biaya_tenaga_kerja:,.0f}")
+    st.write("Biaya Overhead Pabrik:", f"Rp {biaya_overhead_pabrik:,.0f}")
+    st.write("Biaya Operasional:", f"Rp {biaya_operasional:,.0f}")
+    st.write("Laba Bersih:", f"Rp {laba_bersih:,.0f}")
 
     # Menampilkan laporan perubahan modal
     st.header("Laporan Perubahan Modal")
-    st.write("Modal Awal:", locale.currency(modal_awal, grouping=True))
-    st.write("Akun Privasi:", locale.currency(akun_privasi, grouping=True))
-    st.write("Laba Bersih Tahun Berjalan:", locale.currency(laba_bersih, grouping=True))
-    st.write("Total Modal:", locale.currency(total_modal, grouping=True))
+    st.write("Modal Awal:", f"Rp {modal_awal:,.0f}")
+    st.write("Laba Bersih Tahun Berjalan:", f"Rp {laba_bersih:,.0f}")
+    st.write("Total Modal:", f"Rp {total_modal:,.0f}")
 
     # Menampilkan laporan posisi keuangan
     st.header("Laporan Posisi Keuangan")
-    st.write("Akun Aktiva:", locale.currency(akun_aktiva, grouping=True))
-    st.write("Total Aset:", locale.currency(total_aset, grouping=True))
-    st.write("Hutang Usaha:", locale.currency(hutang_usaha, grouping=True))
-    st.write("Total Kewajiban dan Modal:", locale.currency(total_kewajiban_modal, grouping=True))
+    st.write("Kas:", f"Rp {kas:,.0f}")
+    st.write("Piutang Usaha:", f"Rp {piutang_usaha:,.0f}")
+    st.write("Total Aset:", f"Rp {total_aset:,.0f}")
+    st.write("Hutang Usaha:", f"Rp {hutang_usaha:,.0f}")
+    st.write("Total Kewajiban dan Modal:", f"Rp {total_kewajiban_modal:,.0f}")
 
+    # Memungkinkan pengguna mengunduh data ke dalam format CSV
     data = {
         'Tanggal Laporan': [tgl_laporan],
         'Pendapatan Usaha': [pendapatan_usaha],
@@ -515,14 +530,12 @@ def laporan_keuangan_page():
         'Biaya Overhead Pabrik': [biaya_overhead_pabrik],
         'Biaya Operasional': [biaya_operasional],
         'Modal Awal': [modal_awal],
-        'Akun Privasi': [akun_privasi],
         'Laba Bersih': [laba_bersih],
-        'Akun Aktiva': [akun_aktiva],
+        'Kas': [kas],
+        'Piutang Usaha': [piutang_usaha],
         'Hutang Usaha': [hutang_usaha],
         'Total Kewajiban dan Modal': [total_kewajiban_modal]
     }
-
-    return data
 
 
 
